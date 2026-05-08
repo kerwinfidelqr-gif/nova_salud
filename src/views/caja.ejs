@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punto de Venta - Nova Salud</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <main class="container">
+        <h1>Punto de Venta (Caja) - Nova Salud</h1>
+
+        <div class="logout-container">
+            <a href="/logout" class="btn-logout">Cerrar Sesión</a>
+        </div>
+
+        <h3>Medicamentos Disponibles</h3>
+        <table border="1" width="100%">
+            <thead>
+                <tr>
+                    <th>Medicamento</th>
+                    <th>Precio</th>
+                    <th>Stock Actual</th>
+                    <th>Acción</th> 
+                </tr>
+            </thead>
+            <tbody>
+                <% for(let i = 0; i < productos.length; i++) { %>
+                    <tr>
+                        <td class="nombre-producto"><%= productos[i].nombre %></td>
+                        <td class="precio-producto">S/ <%= productos[i].precio %></td>
+                        
+                        <td id="stock-<%= productos[i]._id %>" class="celda-stock">
+                            <%= productos[i].stock %>
+                        </td>
+                        
+                        <td class="celda-accion">
+                            <button type="button" id="btn-<%= productos[i]._id %>" class="btn-vender" onclick="realizarVenta('<%= productos[i]._id %>')" <%= productos[i].stock === 0 ? 'disabled' : '' %>>
+                                Vender 1 Und.
+                            </button>
+                        </td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        socket.emit('identificar-rol', '<%= role %>');
+
+        socket.on('sincronizar-stock', (data) => {
+            const celdaStock = document.getElementById('stock-' + data.idProducto);
+            const botonVender = document.getElementById('btn-' + data.idProducto);
+            
+            if (celdaStock) {
+                celdaStock.innerText = data.nuevoStock;
+            }
+            if (botonVender && data.nuevoStock === 0) {
+                botonVender.disabled = true;
+            }
+        });
+
+        async function realizarVenta(idProducto) {
+            try {
+                await fetch('/vender/' + idProducto, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            } catch (error) {
+                console.error('Error al realizar la venta:', error);
+            }
+        }
+    </script>
+</body>
+</html>

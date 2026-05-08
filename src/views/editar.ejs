@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Producto - Nova Salud</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <main class="container">
+        <h1>Editar Medicamento</h1>
+
+        <div class="header-ventas">
+            <a href="/" class="btn-volver">&larr; Cancelar y Volver</a>
+            <div class="logout-container logout-ventas">
+                <a href="/logout" class="btn-logout">Cerrar Sesión</a>
+            </div>
+        </div>
+
+        <div class="form-container" style="max-width: 500px; margin: 0 auto;">
+            <h3>Actualizar datos de: <%= producto.nombre %></h3>
+            
+            <form action="/editar/<%= producto._id %>" method="POST">
+                <label style="display:block; text-align:left; margin-bottom: 5px; font-weight:bold;">Nombre del Medicamento:</label>
+                <input type="text" name="nombre" value="<%= producto.nombre %>" required style="margin-bottom: 15px;">
+                
+                <label style="display:block; text-align:left; margin-bottom: 5px; font-weight:bold;">Precio (S/):</label>
+                <input type="number" name="precio" value="<%= producto.precio %>" step="0.10" required style="margin-bottom: 15px;">
+                
+                <label style="display:block; text-align:left; margin-bottom: 5px; font-weight:bold;">Stock Actual:</label>
+                <input type="number" name="stock" value="<%= producto.stock %>" required style="margin-bottom: 15px;">
+                
+                <label style="display:block; text-align:left; margin-bottom: 5px; font-weight:bold;">Stock Mínimo (Alerta):</label>
+                <input type="number" name="minimoStock" value="<%= producto.minimoStock %>" required style="margin-bottom: 20px;">
+                
+                <button type="submit" style="background-color: #ffc107; color: black;">Guardar Cambios</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,211 @@
+/* =========================================
+   ESTILOS GENERALES
+   ========================================= */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    text-align: center;
+    padding: 50px;
+}
+
+h1 {
+    color: #2c3e50;
+}
+
+/* =========================================
+   COMPONENTES COMPARTIDOS
+   ========================================= */
+.logout-container {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.btn-logout {
+    color: #d9534f;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 8px 15px;
+    border: 1px solid #d9534f;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.btn-logout:hover {
+    background-color: #d9534f;
+    color: white;
+}
+
+/* =========================================
+   PANEL PRINCIPAL (INDEX / INVENTARIO)
+   ========================================= */
+.contenedor-reporte {
+    margin-bottom: 20px;
+}
+
+.btn-reporte {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+.btn-reporte:hover {
+    background-color: #0056b3;
+}
+
+.alerta-stock-texto {
+    color: red;
+    font-weight: bold;
+}
+
+.alerta-caja {
+    background-color: #ffdddd;
+    color: #d8000c;
+    padding: 15px;
+    margin: 10px 0;
+    border: 1px solid #d8000c;
+    border-radius: 5px;
+}
+
+/* Botones de Acción en el Panel de Admin */
+.btn-vender-admin {
+    padding: 6px 12px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-vender-admin:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.btn-editar {
+    padding: 6px 12px;
+    background-color: #ffc107;
+    color: black;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    border: 1px solid transparent;
+}
+
+.btn-editar:hover {
+    background-color: #e0a800;
+}
+
+.btn-eliminar {
+    padding: 6px 12px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.btn-eliminar:hover {
+    background-color: #c82333;
+}
+
+/* =========================================
+   PUNTO DE VENTA (CAJA)
+   ========================================= */
+.nombre-producto {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.precio-producto {
+    color: green;
+    font-weight: bold;
+}
+
+.celda-stock {
+    font-size: 1.2em;
+    text-align: center;
+}
+
+.celda-accion {
+    text-align: center;
+}
+
+.btn-vender {
+    padding: 1px 10px;
+    font-size: 1.1em;
+    cursor: pointer;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.btn-vender:hover {
+    background-color: #218838;
+}
+
+.btn-vender:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* =========================================
+   REPORTE DE VENTAS
+   ========================================= */
+.header-ventas {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.btn-volver {
+    text-decoration: none;
+    font-weight: bold;
+    color: #007bff;
+    transition: color 0.3s;
+}
+
+.btn-volver:hover {
+    color: #0056b3;
+}
+
+.logout-ventas {
+    margin-bottom: 0;
+}
+
+.venta-nombre {
+    font-weight: bold;
+}
+
+.venta-precio {
+    color: green;
+    font-weight: bold;
+}
+
+.tabla-footer {
+    background-color: #f8f9fa;
+}
+
+.footer-texto {
+    text-align: right;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.footer-total {
+    color: green;
+    font-weight: bold;
+    font-size: 1.2em;
+    padding: 10px;
+}
