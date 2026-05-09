@@ -8,10 +8,8 @@ router.get('/login', authController.showLogin)
 // Ruta que procesa el formulario cuando haces clic en "Ingresar"
 router.post('/login', authController.login)
 
-// Ruta secreta para generar tu usuario en la base de datos
-router.get('/crear-admin', authController.crearAdmin)
-
 // ---> NUEVO: Ruta para cerrar sesión <---
 router.get('/logout', authController.logout)
 
+// Se exporta correctamente el enrutador de Express
 module.exports = router
