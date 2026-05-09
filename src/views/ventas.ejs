@@ -4,52 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reporte de Ventas - Nova Salud</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles_ventas.css">
 </head>
 <body>
-    <main class="container">
-        <h1>Historial de Ventas</h1>
-
-        <div class="header-ventas">
-            <a href="/" class="btn-volver">&larr; Volver al Inventario</a>
-            <div class="logout-container logout-ventas">
-                <a href="/logout" class="btn-logout">Cerrar Sesión</a>
-            </div>
+    <main class="container ventas-container">
+        <div class="header-top">
+            <a href="/" class="btn-volver"><i class="fa-solid fa-arrow-left"></i> Volver al Inventario</a>
+            <a href="/logout" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
         </div>
-
-        <table border="1" width="100%">
-            <thead>
-                <tr>
-                    <th>Fecha y Hora</th>
-                    <th>Medicamento Vendido</th>
-                    <th>Ingreso (S/)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% let totalIngresos = 0; %>
-                <% for(let i = 0; i < ventas.length; i++) { %>
-                    <% totalIngresos += ventas[i].precioVenta; %>
-                    <tr>
-                        <td class="fecha-venta"><%= ventas[i].fecha %></td>
-                        <td class="venta-nombre"><%= ventas[i].nombreProducto %></td>
-                        <td class="venta-precio">S/ <%= ventas[i].precioVenta %></td>
+        <div class="titulos">
+            <h1><i class="fa-solid fa-chart-line"></i> Historial de Ventas</h1>
+            <p class="subtitle">Reporte general de ingresos y salidas de medicamentos</p>
+        </div>
+        <div class="table-wrapper">
+            <div class="scroll-area">
+                <table width="100%">
+                    <thead>
+                        <tr>
+                            <th><i class="fa-regular fa-calendar-days"></i> Fecha y Hora</th>
+                            <th><i class="fa-solid fa-pills"></i> Medicamento</th>
+                            <th style="text-align: right;"><i class="fa-solid fa-sack-dollar"></i> Ingreso (S/)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% let totalIngresos = 0; %>
+                        <% for(let i = 0; i < ventas.length; i++) { %>
+                            <% totalIngresos += ventas[i].precioVenta; %>
+                            <tr>
+                                <td class="fecha-venta"><%= ventas[i].fecha %></td>
+                                <td class="venta-nombre"><%= ventas[i].nombreProducto %></td>
+                                <td class="venta-precio" style="text-align: right;">S/ <%= ventas[i].precioVenta.toFixed(2) %></td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+            <table width="100%">
+                <tfoot>
+                    <tr class="tabla-footer">
+                        <td class="footer-texto">TOTAL INGRESOS:</td>
+                        <td class="footer-total">S/ <%= totalIngresos.toFixed(2) %></td>
                     </tr>
-                <% } %>
-            </tbody>
-            <tfoot>
-                <tr class="tabla-footer">
-                    <td colspan="2" class="footer-texto">TOTAL INGRESOS:</td>
-                    <td class="footer-total">S/ <%= totalIngresos.toFixed(2) %></td>
-                </tr>
-            </tfoot>
-        </table>
+                </tfoot>
+            </table>
+        </div>
     </main>
-
     <script>
-        // Formatear las fechas para que se lean fácilmente (Ej: 10/05/2026, 14:30)
         document.querySelectorAll('.fecha-venta').forEach(celda => {
             const fechaCruda = new Date(celda.innerText);
-            celda.innerText = fechaCruda.toLocaleString('es-PE');
+            celda.innerText = fechaCruda.toLocaleString('es-PE', { 
+                dateStyle: 'short', 
+                timeStyle: 'short' 
+            });
         });
     </script>
 </body>

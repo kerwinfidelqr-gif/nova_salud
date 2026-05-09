@@ -4,36 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Producto - Nova Salud</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles_editar.css">
 </head>
 <body>
-    <main class="container">
-        <h1>Editar Medicamento</h1>
-
-        <div class="header-ventas">
-            <a href="/" class="btn-volver">&larr; Cancelar y Volver</a>
-            <div class="logout-container logout-ventas">
-                <a href="/logout" class="btn-logout">Cerrar Sesión</a>
+    <main class="container edit-card-master">
+        <div class="edit-visual">
+            <img src="https://sinred.com.ar/assets/images/articulos/139/farmacia.jpg" alt="Farmacia Nova Salud">
+            <div class="visual-overlay">
+                <h2>Nova Salud</h2>
+                <p>Gestión de Inventario Profesional</p>
             </div>
         </div>
+        <div class="edit-form-side">
+            <div class="internal-nav">
+                <a href="/" class="btn-back-min"><i class="fa-solid fa-chevron-left"></i> Volver al Inventario</a>
+                <a href="/logout" class="btn-logout-text"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
+            </div>
 
-        <div class="form-container" style="max-width: 500px; margin: 0 auto;">
-            <h3>Actualizar datos de: <%= producto.nombre %></h3>
+            <div class="titulos">
+                <h1><i class="fa-solid fa-pen-to-square"></i> Editar Medicamento</h1>
+                <p class="subtitle">Actualizando datos de: <strong><%= producto.nombre %></strong></p>
+            </div>
             
-            <form action="/editar/<%= producto._id %>" method="POST">
-                <label style="display:block; text-align:left; margin-bottom: 5px; font-weight:bold;">Nombre del Medicamento:</label>
-                <input type="text" name="nombre" value="<%= producto.nombre %>" required style="margin-bottom: 15px;">
+            <form action="/editar/<%= producto._id %>" method="POST" class="form-vertical">
+                <div class="form-group">
+                    <label>Nombre del Medicamento</label>
+                    <input type="text" name="nombre" value="<%= producto.nombre %>" required>
+                </div>
                 
-                <label style="display:block; text-align:left; margin-bottom: 5px; font-weight:bold;">Precio (S/):</label>
-                <input type="number" name="precio" value="<%= producto.precio %>" step="0.10" required style="margin-bottom: 15px;">
+                <div class="form-group">
+                    <label>Precio (S/)</label>
+                    <input type="number" name="precio" value="<%= producto.precio %>" step="0.10" required>
+                </div>
                 
-                <label style="display:block; text-align:left; margin-bottom: 5px; font-weight:bold;">Stock Actual:</label>
-                <input type="number" name="stock" value="<%= producto.stock %>" required style="margin-bottom: 15px;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Stock Actual</label>
+                        <input type="number" name="stock" value="<%= producto.stock %>" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Stock Mínimo</label>
+                        <input type="number" name="minimoStock" value="<%= producto.minimoStock %>" required>
+                    </div>
+                </div>
                 
-                <label style="display:block; text-align:left; margin-bottom: 5px; font-weight:bold;">Stock Mínimo (Alerta):</label>
-                <input type="number" name="minimoStock" value="<%= producto.minimoStock %>" required style="margin-bottom: 20px;">
-                
-                <button type="submit" style="background-color: #ffc107; color: black;">Guardar Cambios</button>
+                <button type="submit" class="btn-actualizar">
+                    <i class="fa-solid fa-circle-check"></i> Guardar Cambios
+                </button>
             </form>
         </div>
     </main>

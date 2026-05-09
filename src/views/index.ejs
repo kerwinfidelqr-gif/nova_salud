@@ -4,101 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nova Salud - Inventario</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles_index.css">
 </head>
 <body>
-<main class="container">
-        <h1>Sistema de Gestión - Nova Salud</h1>
-
-        <div class="logout-container">
-            <a href="/logout" class="btn-logout">Cerrar Sesión</a>
-        </div>
-
-        <div id="alertas-sistema"></div>
-
-        <% if (role === 'admin') { %>
-            <div class="contenedor-reporte">
-                <a href="/ventas" class="btn-reporte">Ver Historial de Ventas</a>
+    <main class="container">
+        <div class="header-top">
+            <div class="titulos">
+                <h1>Sistema de Gestión - Nova Salud</h1>
+                <p class="subtitle">Gestión y control de inventario de medicamentos</p>
             </div>
-
+            <div class="botones-top">
+                <% if (role==='admin' ) { %>
+                    <a href="/ventas" class="btn-reporte">Ver Historial</a>
+                    <% } %>
+                        <a href="/logout" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Cerrar
+                            Sesión</a>
+            </div>
+        </div>
+        <div id="alertas-sistema"></div>
+        <hr class="divider">
+        <% if (role==='admin' ) { %>
             <div class="form-container">
                 <h3>Registrar Nuevo Medicamento</h3>
-                <form action="/productos" method="POST">
+                <form action="/productos" method="POST" class="form-registro">
                     <input type="text" name="nombre" placeholder="Nombre (Ej: Paracetamol)" required>
                     <input type="number" name="precio" placeholder="Precio" step="0.10" required>
                     <input type="number" name="stock" placeholder="Stock Actual" required>
-                    <input type="number" name="minimoStock" placeholder="Stock Mínimo (Alerta)" required>
-                    <button type="submit">Guardar Producto</button>
+                    <input type="number" name="minimoStock" placeholder="Stock Mínimo" required>
+                    <button type="submit" class="btn-guardar">Guardar</button>
                 </form>
             </div>
-
-            <hr>
-        <% } %>
-
-        <h3>Inventario Actual</h3>
-        <table border="1" width="100%">
-            <thead>
-                <tr>
-                    <th>Medicamento</th>
-                    <th>Precio</th>
-                    <th>Stock Actual</th>
-                    <th>Stock Mínimo</th>
-                    <th>Acción</th> 
-                </tr>
-            </thead>
-            <tbody>
-                <% for(let i = 0; i < productos.length; i++) { %>
-                    <tr>
-                        <td><%= productos[i].nombre %></td>
-                        <td>S/ <%= productos[i].precio %></td>
-                        
-                        <td id="stock-<%= productos[i]._id %>" class="<%= productos[i].stock <= productos[i].minimoStock ? 'alerta-stock-texto' : '' %>">
-                            <%= productos[i].stock %>
-                        </td>
-                        
-                        <td><%= productos[i].minimoStock %></td>
-                        
-                        <td style="display: flex; gap: 5px; justify-content: center; align-items: center;">
-                            <a href="/editar/<%= productos[i]._id %>" class="btn-editar">Editar</a>
-
-                            <form action="/eliminar/<%= productos[i]._id %>" method="POST" style="margin: 0;" onsubmit="return confirm('¿Estás seguro de que quieres eliminar <%= productos[i].nombre %> permanentemente?');">
-                                <button type="submit" class="btn-eliminar">Eliminar</button>
-                            </form>
-                        </td>
-                    </tr>
-                <% } %>
-            </tbody>
-        </table>
+            <% } %>
+                <div class="table-header-title">
+                    <h3>Inventario Actual</h3>
+                </div>
+                <div class="table-wrapper">
+                    <% if (productos && productos.length> 0) { %>
+                        <div class="scroll-area">
+                            <table width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Medicamento</th>
+                                        <th>Precio</th>
+                                        <th>Stock Actual</th>
+                                        <th>Stock Mínimo</th>
+                                        <th style="text-align: center;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for(let i=0; i < productos.length; i++) { %>
+                                        <tr>
+                                            <td class="med-name">
+                                                <%= productos[i].nombre %>
+                                            </td>
+                                            <td>S/ <%= productos[i].precio %>
+                                            </td>
+                                            <td id="stock-<%= productos[i]._id %>">
+                                                <span
+                                                    class="<%= productos[i].stock <= productos[i].minimoStock ? 'alerta-stock-texto' : 'stock-normal' %>">
+                                                    <%= productos[i].stock %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <%= productos[i].minimoStock %>
+                                            </td>
+                                            <td class="acciones-td">
+                                                <a href="/editar/<%= productos[i]._id %>" class="btn-editar">Editar</a>
+                                                <form action="/eliminar/<%= productos[i]._id %>" method="POST"
+                                                    class="form-eliminar"
+                                                    onsubmit="return confirm('¿Eliminar <%= productos[i].nombre %>?');">
+                                                    <button type="submit" class="btn-eliminar">Eliminar</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <% } else { %>
+                            <div class="empty-state">
+                                <i class="fa-solid fa-box-open"></i>
+                                <p>No hay medicamentos registrados en el inventario actual.</p>
+                            </div>
+                            <% } %>
+                </div>
     </main>
-
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-        
-        // Le enviamos al servidor el rol del usuario conectado
         socket.emit('identificar-rol', '<%= role %>');
-        
         const alertasDiv = document.getElementById('alertas-sistema');
 
-        // Escuchamos el evento 'alerta-stock' que nos manda el controlador
         socket.on('alerta-stock', (data) => {
             const alerta = document.createElement('div');
             alerta.className = 'alerta-caja';
-            alerta.innerHTML = `<strong> Notificación del Sistema:</strong> ${data.mensaje}`;
-
+            alerta.innerHTML = `<strong>Aviso:</strong> ${data.mensaje}`;
             alertasDiv.appendChild(alerta);
-
-            setTimeout(() => {
-                alerta.remove();
-            }, 3000);
+            setTimeout(() => { alerta.remove(); }, 4000);
         });
-
-        // Escuchamos cuando un CAJERO hace una venta para actualizar el número visualmente
         socket.on('sincronizar-stock', (data) => {
             const celdaStock = document.getElementById('stock-' + data.idProducto);
-            
             if (celdaStock) {
-                celdaStock.innerText = data.nuevoStock;
+                const span = celdaStock.querySelector('span');
+                if (span) span.innerText = data.nuevoStock;
             }
         });
     </script>
