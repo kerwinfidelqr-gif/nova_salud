@@ -1,14 +1,15 @@
-const express = require('express')
-const router = express.Router()
-const productController = require('../controllers/productController')
-const authMiddleware = require('../middlewares/authMiddleware');
+const express = require('express');
+const router = express.Router();
+const productController = require('../controllers/productController');
+const { verificarSesion, autorizarRoles } = require('../middlewares/authMiddleware');
 
-router.get('/productos', authMiddleware.verificarSesion, productController.getProducts)
-router.post('/productos', authMiddleware.verificarSesion, authMiddleware.verificarAdmin, productController.createProduct)
-router.post('/vender/:id', authMiddleware.verificarSesion, productController.venderProducto)
-router.get('/ventas', authMiddleware.verificarSesion, authMiddleware.verificarAdmin, productController.getVentas)
-router.post('/eliminar/:id', authMiddleware.verificarSesion, authMiddleware.verificarAdmin, productController.deleteProduct)
-router.get('/editar/:id', authMiddleware.verificarSesion, authMiddleware.verificarAdmin, productController.showEditForm)
-router.post('/editar/:id', authMiddleware.verificarSesion, authMiddleware.verificarAdmin, productController.updateProduct)
+router.get('/productos', verificarSesion, autorizarRoles('admin', 'almacen'), productController.getProducts);
+router.post('/productos', verificarSesion, autorizarRoles('admin', 'almacen'), productController.createProduct);
+router.post('/vender/:id', verificarSesion, autorizarRoles('admin', 'ventas'), productController.venderProducto);
+router.post('/vender-carrito', verificarSesion, autorizarRoles('admin', 'ventas'), productController.venderCarrito);
+router.get('/ventas', verificarSesion, autorizarRoles('admin'), productController.getVentas);
+router.post('/eliminar/:id', verificarSesion, autorizarRoles('admin', 'almacen'), productController.deleteProduct);
+router.get('/editar/:id', verificarSesion, autorizarRoles('admin', 'almacen'), productController.showEditForm);
+router.post('/editar/:id', verificarSesion, autorizarRoles('admin', 'almacen'), productController.updateProduct);
 
-module.exports = router
+module.exports = router;

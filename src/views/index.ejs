@@ -16,8 +16,9 @@
             </div>
             <div class="botones-top">
                 <% if (role==='admin' ) { %>
+                    <a href="/users" class="btn-reporte" style="background: #FFA726; margin-right: 10px;">Gestionar Usuarios</a>
                     <a href="/ventas" class="btn-reporte">Ver Historial</a>
-                    <% } %>
+                <% } %>
                         <a href="/logout" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Cerrar
                             Sesión</a>
             </div>
@@ -36,8 +37,10 @@
                 </form>
             </div>
             <% } %>
-                <div class="table-header-title">
-                    <h3>Inventario Actual</h3>
+                <div class="table-header-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="margin-bottom: 0;">Inventario Actual</h3>
+                    <input type="text" id="buscador-medicamentos" placeholder="Buscar medicamento..." 
+                        style="width: 300px; height: 38px; padding: 0 15px; border: 1px solid rgba(100, 181, 246, 0.4); border-radius: 10px; font-size: 0.9rem; outline: none; background-color: rgba(255, 255, 255, 0.95);">
                 </div>
                 <div class="table-wrapper">
                     <% if (productos && productos.length> 0) { %>
@@ -110,6 +113,35 @@
                 if (span) span.innerText = data.nuevoStock;
             }
         });
+
+        // Agrega esto justo debajo de tus otros socket.on(...)
+        socket.on('catalogo-actualizado', () => {
+            // Cuando el servidor grite que el catálogo cambió, recargamos la página suavemente
+            window.location.reload();
+        });
+
+        // ---> NUEVO: Lógica del Buscador en Vivo <---
+        const buscador = document.getElementById('buscador-medicamentos');
+        
+        if (buscador) {
+            buscador.addEventListener('input', function() {
+                const textoBusqueda = this.value.toLowerCase();
+                // Seleccionamos todas las filas del cuerpo de la tabla
+                const filas = document.querySelectorAll('tbody tr');
+
+                filas.forEach(fila => {
+                    // Buscamos el texto dentro de la celda que tiene la clase 'med-name'
+                    const nombreMedicamento = fila.querySelector('.med-name').innerText.toLowerCase();
+                    
+                    // Si el nombre incluye lo que escribimos, la mostramos, sino la ocultamos
+                    if (nombreMedicamento.includes(textoBusqueda)) {
+                        fila.style.display = '';
+                    } else {
+                        fila.style.display = 'none';
+                    }
+                });
+            });
+        }
     </script>
 </body>
 </html>

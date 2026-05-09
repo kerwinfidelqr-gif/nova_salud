@@ -1,115 +1,133 @@
-const Product = require('../models/productModel');
-const Sale = require('../models/saleModel');
+const ProductService = require('../services/productService');
+const SaleService = require('../services/saleService');
 
-const getProducts = async (req, res) => {
+const productService = new ProductService();
+const saleService = new SaleService();
+
+exports.getProducts = async (req, res) => {
     try {
-        const productos = await Product.find();
-        res.render('index', { productos: productos, role: req.session.role });
+        const productos = await productService.getAll();
+        res.render('index', { productos, role: req.session.role });
     } catch (error) {
-        console.log(error);
-        res.status(500).send('Hubo un error en el servidor');
+        res.status(500).send('Error al cargar productos');
     }
-}
+};
 
-const createProduct = async (req, res) => {
+exports.createProduct = async (req, res) => {
     try {
-        const nuevoProducto = new Product(req.body);
-        await nuevoProducto.save();
+        await productService.create(req.body);
+        req.app.get('socketio').emit('catalogo-actualizado');
         res.redirect('/');
     } catch (error) {
-        console.log(error);
-        res.status(500).send('Hubo un error al guardar');
+        res.status(500).send('Error al crear producto');
     }
-}
+};
 
-const venderProducto = async (req, res) => {
+exports.venderProducto = async (req, res) => {
     try {
-        const producto = await Product.findById(req.params.id);
-        
-        if (producto.stock > 0) {
-            producto.stock -= 1;
-            await producto.save();
-
-            const nuevaVenta = new Sale({
-                productoId: producto._id,
-                nombreProducto: producto.nombre,
-                precioVenta: producto.precio,
-                vendedorId: req.session.userId 
-            });
-            await nuevaVenta.save();
-
-            const io = req.app.get('socketio');
-            
-            io.emit('sincronizar-stock', {
-                idProducto: producto._id,
-                nuevoStock: producto.stock
-            });
-
-            if (producto.stock <= producto.minimoStock) {
-                io.to('sala_administradores').emit('alerta-stock', {
-                    mensaje: `El producto ${producto.nombre} tiene bajo stock (${producto.stock} unidades).`
-                });
-            }
-            
-            res.json({ success: true, nuevoStock: producto.stock });
-        } else {
-            res.json({ success: false, mensaje: 'No hay stock suficiente' });
+        const producto = await productService.getById(req.params.id);
+        if (!producto || producto.stock <= 0) {
+            return res.json({ success: false, mensaje: 'Sin stock' });
         }
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ success: false, mensaje: 'Error en el servidor al vender' });
-    }
-}
 
-const getVentas = async (req, res) => {
-    try {
-        const ventas = await Sale.find().sort({ fecha: -1 });
-        res.render('ventas', { ventas: ventas, role: req.session.role });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send('Hubo un error al cargar el reporte de ventas');
-    }
-}
+        const productoActualizado = await productService.decreaseStock(producto._id, 1);
+        await saleService.create({
+            productoId: producto._id,
+            nombreProducto: producto.nombre,
+            precioVenta: producto.precio,
+            vendedorId: req.session.userId
+        });
 
-const deleteProduct = async (req, res) => {
+        const io = req.app.get('socketio');
+        io.emit('sincronizar-stock', {
+            idProducto: producto._id,
+            nuevoStock: productoActualizado.stock
+        });
+
+        if (productoActualizado.stock <= producto.minimoStock) {
+            io.emit('alerta-stock', {
+                mensaje: `El producto ${producto.nombre} tiene bajo stock (${productoActualizado.stock} unidades).`
+            });
+        }
+
+        res.json({ success: true, nuevoStock: productoActualizado.stock });
+    } catch (error) {
+        res.status(500).json({ success: false, mensaje: 'Error al vender' });
+    }
+};
+
+exports.venderCarrito = async (req, res) => {
     try {
-        await Product.findByIdAndDelete(req.params.id);
+        const { clienteNombre, clienteDni, productos } = req.body;
+        const io = req.app.get('socketio');
+
+        for (let item of productos) {
+            const productoDB = await productService.getById(item.id);
+            if (productoDB && productoDB.stock >= item.cantidad) {
+                await productService.decreaseStock(productoDB._id, item.cantidad);
+                await saleService.create({
+                    productoId: productoDB._id,
+                    nombreProducto: productoDB.nombre,
+                    cantidad: item.cantidad,
+                    precioVenta: item.precio * item.cantidad,
+                    clienteNombre, clienteDni,
+                    vendedorId: req.session.userId
+                });
+
+                io.emit('sincronizar-stock', {
+                    idProducto: productoDB._id,
+                    nuevoStock: productoDB.stock - item.cantidad
+                });
+
+                if ((productoDB.stock - item.cantidad) <= productoDB.minimoStock) {
+                    io.emit('alerta-stock', {
+                        mensaje: `El producto ${productoDB.nombre} tiene bajo stock.`
+                    });
+                }
+            }
+        }
+
+        io.emit('catalogo-actualizado');
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ success: false, mensaje: 'Error procesando carrito' });
+    }
+};
+
+exports.getVentas = async (req, res) => {
+    try {
+        const ventas = await saleService.getAll();
+        res.render('ventas', { ventas, role: req.session.role });
+    } catch (error) {
+        res.status(500).send('Error al cargar ventas');
+    }
+};
+
+exports.deleteProduct = async (req, res) => {
+    try {
+        await productService.delete(req.params.id);
+        req.app.get('socketio').emit('catalogo-actualizado');
         res.redirect('/');
     } catch (error) {
-        console.log(error);
-        res.status(500).send('Hubo un error al eliminar el producto');
+        res.status(500).send('Error al eliminar producto');
     }
-}
+};
 
-// ---> NUEVO: Mostrar el formulario con los datos actuales <---
-const showEditForm = async (req, res) => {
+exports.showEditForm = async (req, res) => {
     try {
-        const producto = await Product.findById(req.params.id);
-        res.render('editar', { producto: producto, role: req.session.role });
+        const producto = await productService.getById(req.params.id);
+        res.render('editar', { producto, role: req.session.role });
     } catch (error) {
-        console.log(error);
-        res.status(500).send('Error al cargar el producto para editar');
+        res.status(500).send('Error al cargar producto para editar');
     }
-}
+};
 
-// ---> NUEVO: Guardar los datos actualizados <---
-const updateProduct = async (req, res) => {
+exports.updateProduct = async (req, res) => {
     try {
-        // Busca por ID y actualiza con los nuevos datos del formulario (req.body)
-        await Product.findByIdAndUpdate(req.params.id, req.body);
+        await productService.update(req.params.id, req.body);
+        req.app.get('socketio').emit('catalogo-actualizado');
         res.redirect('/');
     } catch (error) {
-        console.log(error);
-        res.status(500).send('Error al actualizar el producto');
+        res.status(500).send('Error al actualizar producto');
     }
-}
-
-module.exports = {
-    getProducts,
-    createProduct,
-    venderProducto,
-    getVentas,
-    deleteProduct,
-    showEditForm,
-    updateProduct  
-}
+};
