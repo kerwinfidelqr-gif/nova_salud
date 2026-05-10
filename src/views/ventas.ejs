@@ -25,48 +25,54 @@
                             <th><i class="fa-regular fa-calendar-days"></i> Fecha y Hora</th>
                             <th><i class="fa-solid fa-user-injured"></i> Paciente</th>
                             <th><i class="fa-solid fa-pills"></i> Medicamento</th>
-                            <th style="text-align: center;">Cant.</th>
-                            <th style="text-align: right;"><i class="fa-solid fa-sack-dollar"></i> Subtotal</th>
+                            <th class="text-center">Cant.</th>
+                            <th class="text-right"><i class="fa-solid fa-sack-dollar"></i> Subtotal</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% let totalIngresos = 0; %>
-                        <% for(let i = 0; i < ventas.length; i++) { %>
-                            <% totalIngresos += ventas[i].precioVenta; %>
+                        <% if (ventas && ventas.length > 0) { %>
+                            <% for(let i = 0; i < ventas.length; i++) { %>
+                                <% totalIngresos += ventas[i].precioVenta; %>
+                                <tr>
+                                    <td class="fecha-venta"><%= ventas[i].fecha %></td>
+                                    <td class="col-paciente">
+                                        <strong><%= ventas[i].clienteNombre || 'Público General' %></strong><br>
+                                        <span class="dni-text">DNI: <%= ventas[i].clienteDni || 'S/N' %></span>
+                                    </td>
+                                    <td class="venta-nombre"><%= ventas[i].nombreProducto %></td>
+                                    <td class="text-center bold"><%= ventas[i].cantidad || 1 %></td>
+                                    <td class="venta-precio text-right">S/ <%= parseFloat(ventas[i].precioVenta).toFixed(2) %></td>
+                                </tr>
+                            <% } %>
+                        <% } else { %>
                             <tr>
-                                <td class="fecha-venta"><%= ventas[i].fecha %></td>
-                                <td>
-                                    <strong><%= ventas[i].clienteNombre || 'Público General' %></strong><br>
-                                    <span style="font-size: 0.8em; color: #64748b;">DNI: <%= ventas[i].clienteDni || 'S/N' %></span>
-                                </td>
-                                <td class="venta-nombre"><%= ventas[i].nombreProducto %></td>
-                                <td style="text-align: center; font-weight: bold;"><%= ventas[i].cantidad || 1 %></td>
-                                <td class="venta-precio" style="text-align: right;">S/ <%= ventas[i].precioVenta.toFixed(2) %></td>
+                                <td colspan="5" class="empty-state">No hay ventas registradas aún.</td>
                             </tr>
                         <% } %>
                     </tbody>
                 </table>
             </div>
-            <table width="100%">
-                <tfoot>
-                    <tr class="tabla-footer">
-                        <td class="footer-texto" style="text-align: right; padding-right: 20px; width: 80%;">TOTAL INGRESOS:</td>
-                        <td class="footer-total" style="text-align: right;">S/ <%= totalIngresos.toFixed(2) %></td>
-                    </tr>
-                </tfoot>
-            </table>
+
+            <div class="resumen-footer">
+                <span class="footer-texto">TOTAL INGRESOS:</span>
+                <strong class="footer-total">S/ <%= parseFloat(totalIngresos).toFixed(2) %></strong>
+            </div>
         </div>
     </main>
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-
         document.querySelectorAll('.fecha-venta').forEach(celda => {
-            const fechaCruda = new Date(celda.innerText);
-            celda.innerText = fechaCruda.toLocaleString('es-PE', { 
-                dateStyle: 'short', 
-                timeStyle: 'short' 
-            });
+            const texto = celda.innerText.trim();
+            if(texto) {
+                const fechaCruda = new Date(texto);
+                celda.innerText = fechaCruda.toLocaleString('es-PE', { 
+                    dateStyle: 'short', 
+                    timeStyle: 'short' 
+                });
+            }
         });
 
         socket.on('catalogo-actualizado', () => {

@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    padding: 5vh 20px; 
+    background-color: #E3F2FD;
+    position: relative;
+    color: #334155;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: ""; position: fixed; top: -5%; left: -5%; width: 110%; height: 110%;
+    background-image: url('https://img.freepik.com/vector-premium/ilustracion-estilo-dibujos-animados-plana-interior-farmacia-fondo-web_198565-44.jpg?w=360'); 
+    background-size: cover; background-position: center; filter: blur(8px); z-index: -2;
+}
+
+body::after {
+    content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(100, 181, 246, 0.40); z-index: -1; 
+}
+.container {
+    width: 100%; 
+    max-width: 1150px;
+    background: rgba(255, 255, 255, 0.75);
+    padding: 35px 45px; 
+    border-radius: 24px;
+    box-shadow: 0 25px 50px rgba(33, 150, 243, 0.15); 
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(16px); 
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 1;
+    animation: flotarEntrada 0.6s ease-out forwards;
+}
+
+@keyframes flotarEntrada {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; flex-wrap: wrap; gap: 15px; }
+.titulos h1 { color: #1565C0; font-weight: 600; font-size: 1.7rem; margin-bottom: 4px; letter-spacing: -0.5px; }
+.titulos .subtitle { color: #546E7A; font-size: 0.95rem; font-weight: 400; }
+.botones-top { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.btn-volver-inv {
+    background: #1565C0; color: white; height: 40px; padding: 0 18px; border-radius: 10px;
+    text-decoration: none; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 8px;
+    transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(21, 101, 192, 0.2);
+}
+.btn-volver-inv:hover { background: #0D47A1; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(21, 101, 192, 0.3); }
+
+.btn-logout {
+    background: #EF5350; color: white; height: 40px; padding: 0 18px; border-radius: 10px;
+    text-decoration: none; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 8px;
+    transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(239, 83, 80, 0.2);
+}
+.btn-logout:hover { background: #D32F2F; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(239, 83, 80, 0.3); }
+
+.divider { border: none; height: 1px; background-color: rgba(100, 181, 246, 0.35); margin: 25px 0; }
+.form-container {
+    background: rgba(255, 255, 255, 0.8); 
+    padding: 24px 30px; 
+    border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.9);
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.form-container h3 { color: #1565C0; font-weight: 600; font-size: 1.1rem; margin-bottom: 15px; }
+
+.form-usuario {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr) auto; 
+    gap: 12px; 
+    align-items: center;
+}
+
+.form-usuario input, .form-usuario select {
+    height: 42px; 
+    padding: 0 12px; border: 1px solid rgba(100, 181, 246, 0.4); border-radius: 8px;
+    font-size: 0.9rem; color: #333; background-color: white; 
+    transition: all 0.3s ease; width: 100%; outline: none;
+}
+
+.form-usuario input:focus, .form-usuario select:focus {
+    border-color: #1E88E5; box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.15);
+}
+
+.btn-guardar {
+    height: 42px; padding: 0 20px;
+    background: linear-gradient(135deg, #42A5F5, #1565C0); color: white;
+    border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(21, 101, 192, 0.2);
+    display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-guardar:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(21, 101, 192, 0.3); }
+.table-wrapper {
+    background: rgba(255, 255, 255, 0.9); border-radius: 16px; overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+.table-title { padding: 15px 20px; color: #1565C0; font-size: 1.1rem; border-bottom: 1px solid #E3F2FD; }
+.scroll-area { max-height: 400px; overflow-y: auto; overflow-x: auto; }
+.scroll-area::-webkit-scrollbar { width: 8px; height: 8px; }
+.scroll-area::-webkit-scrollbar-track { background: transparent; }
+.scroll-area::-webkit-scrollbar-thumb { background: #90CAF9; border-radius: 10px; }
+.scroll-area::-webkit-scrollbar-thumb:hover { background: #42A5F5; }
+
+table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 600px; }
+thead th {
+    background: #1E88E5; color: white; padding: 14px 18px; 
+    font-size: 0.85rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;
+    position: sticky; top: 0; z-index: 10;
+}
+
+tbody td { padding: 12px 18px; font-size: 0.9rem; border-bottom: 1px solid #E3F2FD; vertical-align: middle; color: #475569; }
+tbody tr:hover { background-color: #F8FAFC; }
+.text-center { text-align: center; }
+.form-inline { display: inline; margin: 0; }
+
+.role-badge {
+    background: #E3F2FD; color: #1565C0; padding: 4px 12px; 
+    border-radius: 6px; font-weight: 600; font-size: 0.85rem; text-transform: capitalize;
+}
+
+.btn-eliminar-usuario {
+    background: #EF5350; color: white; border: none; width: 35px; height: 35px;
+    border-radius: 8px; cursor: pointer; transition: 0.3s; font-size: 1rem;
+    display: inline-flex; justify-content: center; align-items: center;
+}
+.btn-eliminar-usuario:hover { background: #D32F2F; transform: scale(1.1); }
+.empty-state-row { text-align: center; padding: 40px !important; color: #64748B !important; font-style: italic; }
+@media (max-width: 900px) {
+    .container { padding: 25px 20px; }
+    .header-top { flex-direction: column; text-align: center; }
+    .botones-top { justify-content: center; }
+    .form-usuario {
+        grid-template-columns: 1fr;
+    }
+    
+    .btn-guardar { justify-content: center; }
+}
