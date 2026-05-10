@@ -1,37 +1,34 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    margin: 0; padding: 0; box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
 }
 
 body {
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-    padding: 20px;
+    display: flex; justify-content: center; align-items: flex-start; 
+    padding: 5vh 20px;
     background-color: #E3F2FD;
     position: relative;
     color: #334155;
+    overflow-x: hidden;
 }
 
 body::before {
     content: ""; position: fixed; top: -5%; left: -5%; width: 110%; height: 110%;
     background-image: url('https://img.freepik.com/vector-premium/ilustracion-estilo-dibujos-animados-plana-interior-farmacia-fondo-web_198565-44.jpg?w=360'); 
-    background-size: cover; background-position: center; filter: blur(8px); z-index: -2;
+    background-size: cover; background-position: center; filter: blur(10px); z-index: -2;
 }
 
 body::after {
     content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(100, 181, 246, 0.45); z-index: -1; 
+    background-color: rgba(100, 181, 246, 0.40); z-index: -1; 
 }
 
 .container {
     width: 100%; 
-    max-width: 950px; 
+    max-width: 1050px;
     background: rgba(255, 255, 255, 0.75); 
     padding: 35px 45px; 
     border-radius: 24px;
@@ -39,11 +36,12 @@ body::after {
     border: 1px solid rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
     z-index: 1;
-    animation: flotarEntrada 0.6s ease-out forwards;
+    animation: flotarEntrada 0.5s ease-out forwards;
 }
 
-@keyframes flotarEntrada { to { opacity: 1; transform: translateY(0); } }
-.header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+@keyframes flotarEntrada { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+.header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+
 .btn-volver {
     color: #1565C0; text-decoration: none; font-weight: 600; font-size: 0.9rem;
     display: inline-flex; align-items: center; gap: 8px;
@@ -51,46 +49,64 @@ body::after {
     transition: all 0.3s ease;
 }
 .btn-volver:hover { background: #FFFFFF; transform: translateX(-3px); }
+
 .btn-logout {
     height: 38px; padding: 0 16px; border-radius: 10px; text-decoration: none;
     font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-    background: #EF5350; color: white; transition: all 0.3s ease;
+    background: #EF5350; color: white; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(239, 83, 80, 0.2);
 }
-.btn-logout:hover { background: #D32F2F; transform: translateY(-2px); }
+.btn-logout:hover { background: #D32F2F; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(239, 83, 80, 0.3); }
 
 .titulos { text-align: center; margin-bottom: 30px; }
-.titulos h1 { color: #1565C0; font-weight: 600; font-size: 1.7rem; margin-bottom: 5px; }
-.titulos .subtitle { color: #546E7A; font-size: 0.9rem; }
+.titulos h1 { color: #1565C0; font-weight: 600; font-size: 1.8rem; margin-bottom: 5px; }
+.titulos .subtitle { color: #546E7A; font-size: 0.95rem; }
 .table-wrapper {
-    background: #FFFFFF; border-radius: 12px; overflow: hidden;
-    border: 1px solid rgba(100, 181, 246, 0.3);
+    background: rgba(255, 255, 255, 0.9); border-radius: 16px; overflow: hidden;
+    border: 1px solid rgba(100, 181, 246, 0.3); box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
 }
 
 .scroll-area {
-    max-height: 350px;
+    max-height: 450px;
     overflow-y: auto;
+    overflow-x: auto; 
 }
 
-.scroll-area::-webkit-scrollbar { width: 8px; }
-.scroll-area::-webkit-scrollbar-track { background: #F1F1F1; }
+.scroll-area::-webkit-scrollbar { width: 8px; height: 8px; }
+.scroll-area::-webkit-scrollbar-track { background: transparent; }
 .scroll-area::-webkit-scrollbar-thumb { background: #BBDEFB; border-radius: 10px; }
 .scroll-area::-webkit-scrollbar-thumb:hover { background: #90CAF9; }
 
-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 800px;}
 
-thead {
-    background: #1E88E5; color: white;
-    position: sticky; top: 0; z-index: 5;
+thead th {
+    background: #1E88E5; color: white; padding: 14px 20px; font-size: 0.85rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.5px; position: sticky; top: 0; z-index: 5;
 }
 
-th, td { padding: 12px 20px; text-align: left; }
-th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
-td { font-size: 0.9rem; border-bottom: 1px solid #F5F9FF; }
-
-th:nth-child(1), td:nth-child(1) { width: 35%; }
-th:nth-child(2), td:nth-child(2) { width: 40%; }
-th:nth-child(3), td:nth-child(3) { width: 25%; }
-
-.tabla-footer { background: #F8FAFC; border-top: 2px solid #BBDEFB; }
-.footer-texto { text-align: right; font-weight: 600; color: #1E293B; width: 75% !important; }
-.footer-total { text-align: right; font-weight: 700; color: #43A047; font-size: 1.1rem; width: 25% !important; }
+tbody td { padding: 12px 20px; font-size: 0.9rem; border-bottom: 1px solid rgba(227, 242, 253, 0.6); vertical-align: middle; color: #475569; }
+tbody tr:hover { background-color: rgba(245, 249, 255, 0.8); }
+.dni-text { font-size: 0.8em; color: #94A3B8; display: block; margin-top: 2px; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.bold { font-weight: 600; color: #1E293B; }
+.venta-nombre { font-weight: 500; color: #1E293B; }
+.empty-state { text-align: center; padding: 40px !important; color: #94A3B8 !important; font-style: italic; }
+.resumen-footer { 
+    display: flex; justify-content: flex-end; align-items: center; 
+    background: #F8FAFC; border-top: 2px solid #BBDEFB; padding: 20px 25px; gap: 20px;
+}
+.footer-texto { font-weight: 600; color: #475569; font-size: 1rem; }
+.footer-total { color: #2E7D32; font-size: 1.4rem; }
+@media (max-width: 768px) {
+    .container { padding: 25px 20px; }
+    
+    .header-top { flex-direction: column; align-items: stretch; }
+    .btn-volver { justify-content: center; margin-bottom: 15px; }
+    .btn-logout { justify-content: center; }
+    .titulos h1 { font-size: 1.5rem; }
+    .resumen-footer {
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+}

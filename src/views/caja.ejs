@@ -8,96 +8,113 @@
     <link rel="stylesheet" href="/css/styles_caja.css">
 </head>
 <body>
-    <div id="alertas-sistema" style="position: fixed; top: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px;"></div>
-    
-    <main class="container caja-container" style="max-width: 1200px;">
-        <div class="header-top">
+    <div id="alertas-sistema" class="contenedor-alertas"></div>
+    <main class="container caja-master">
+        <header class="header-top">
             <div class="titulos">
                 <h1>Punto de Venta</h1>
                 <p class="subtitle">Atención al cliente y despacho de medicamentos</p>
             </div>
-            <div class="botones-top">
-                <a href="/logout" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
-            </div>
-        </div>
+            <a href="/logout" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
+        </header>
         <hr class="divider">
-        
-        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
-            
-            <div style="flex: 1 1 60%; min-width: 300px;">
-                <h3><i class="fa-solid fa-pills"></i> Medicamentos Disponibles</h3>
+        <div class="caja-layout-grid">
+            <section class="panel-izquierdo">
+                <h3 class="panel-titulo"><i class="fa-solid fa-pills"></i> Medicamentos Disponibles</h3>
                 <div class="table-wrapper">
-                    <% if (productos && productos.length > 0) { %>
+                    <% if (productos && productos.length> 0) { %>
                         <div class="scroll-area">
-                            <table width="100%">
+                            <table>
                                 <thead>
                                     <tr>
                                         <th>Medicamento</th>
                                         <th>Precio</th>
-                                        <th style="text-align: center;">Stock</th>
-                                        <th style="text-align: center;">Acción</th>
+                                        <th class="text-center">Stock</th>
+                                        <th class="text-center">Acción</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <% for(let i=0; i < productos.length; i++) { %>
                                         <tr>
-                                            <td class="med-name"><%= productos[i].nombre %></td>
-                                            <td>S/ <%= parseFloat(productos[i].precio).toFixed(2) %></td>
-                                            <td style="text-align: center;" id="stock-<%= productos[i]._id %>">
-                                                <span class="stock-badge <%= productos[i].stock <= productos[i].minimoStock ? 'alerta-stock-texto' : 'stock-normal' %>">
+                                            <td class="med-name">
+                                                <%= productos[i].nombre %>
+                                            </td>
+                                            <td class="precio-col">S/ <%= parseFloat(productos[i].precio).toFixed(2) %>
+                                            </td>
+                                            <td class="text-center" id="stock-<%= productos[i]._id %>">
+                                                <span
+                                                    class="stock-badge <%= productos[i].stock <= productos[i].minimoStock ? 'alerta-stock-texto' : 'stock-normal' %>">
                                                     <%= productos[i].stock %>
                                                 </span>
                                             </td>
-                                            <td class="acciones-td" style="text-align: center;">
-                                                <button id="btn-<%= productos[i]._id %>" class="btn-vender" style="background: #1565C0; padding: 6px 12px; border: none; border-radius: 5px; color: white; cursor: pointer;"
-                                                    onclick="agregarAlCarrito('<%= productos[i]._id %>', '<%= productos[i].nombre %>', <%= productos[i].precio %>, <%= productos[i].stock %>)" 
-                                                    <%= productos[i].stock === 0 ? 'disabled' : '' %>>
-                                                    <i class="fa-solid fa-cart-plus"></i> <%= productos[i].stock === 0 ? 'Agotado' : 'Agregar' %>
+                                            <td class="text-center acciones-td">
+                                                <button id="btn-<%= productos[i]._id %>" class="btn-vender"
+                                                    onclick="agregarAlCarrito('<%= productos[i]._id %>', '<%= productos[i].nombre %>', <%= productos[i].precio %>, <%= productos[i].stock %>)"
+                                                    <%=productos[i].stock===0 ? 'disabled' : '' %>>
+                                                    <i class="fa-solid fa-cart-plus"></i>
+                                                    <%= productos[i].stock===0 ? 'Agotado' : 'Agregar' %>
                                                 </button>
                                             </td>
                                         </tr>
-                                    <% } %>
+                                        <% } %>
                                 </tbody>
                             </table>
                         </div>
-                    <% } else { %>
-                        <div class="empty-state">
-                            <i class="fa-solid fa-box-open"></i>
-                            <p>No hay medicamentos registrados en el inventario actual.</p>
-                        </div>
-                    <% } %>
+                        <% } else { %>
+                            <div class="empty-state">
+                                <i class="fa-solid fa-box-open"></i>
+                                <p>No hay medicamentos registrados en el inventario.</p>
+                            </div>
+                            <% } %>
                 </div>
-            </div>
-
-            <div style="flex: 1 1 30%; min-width: 280px; background: rgba(255,255,255,0.95); padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #e0e0e0;">
-                <h3 style="margin-top: 0; color: #334155;"><i class="fa-solid fa-user-injured"></i> Datos del Paciente</h3>
-                <input type="text" id="cliente-nombre" placeholder="Nombre Completo" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none;">
-                <input type="text" id="cliente-dni" placeholder="DNI / Documento" style="width: 100%; padding: 10px; margin-bottom: 25px; border: 1px solid #ccc; border-radius: 6px; outline: none;">
-
-                <h3 style="color: #334155;"><i class="fa-solid fa-cart-shopping"></i> Carrito de Compras</h3>
-                <div id="lista-carrito" style="min-height: 120px; max-height: 250px; overflow-y: auto; border: 1px dashed #aaa; border-radius: 6px; padding: 10px; margin-bottom: 15px; background: #f8fafc;">
-                    <p style="text-align: center; color: #94a3b8; font-size: 0.9em; margin-top: 40px;">El carrito está vacío</p>
+            </section>
+            <aside class="sidebar-carrito">
+                <div class="tarjeta-card seccion-datos">
+                    <h3 class="panel-titulo"><i class="fa-solid fa-user-injured"></i> Datos del Paciente</h3>
+                    <input type="text" id="cliente-nombre" class="input-caja" placeholder="Nombre Completo">
+                    <input type="text" id="cliente-dni" class="input-caja input-mb" placeholder="DNI / Documento">
                 </div>
-                
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-top: 10px; border-top: 2px solid #e2e8f0;">
-                    <strong style="font-size: 1.2em; color: #334155;">Total a Pagar:</strong>
-                    <strong style="font-size: 1.3em; color: #1565C0;">S/ <span id="total-carrito">0.00</span></strong>
+                <div class="tarjeta-card seccion-lista-carrito">
+                    <h3 class="panel-titulo"><i class="fa-solid fa-cart-shopping"></i> Carrito de Compras</h3>
+                    <div id="lista-carrito" class="carrito-box">
+                        <p class="carrito-vacio">El carrito está vacío</p>
+                    </div>
+                    <div class="total-resumen">
+                        <span class="total-texto">Total a Pagar:</span>
+                        <strong class="total-monto">S/ <span id="total-carrito">0.00</span></strong>
+                    </div>
+                    <button onclick="confirmarVentaCarrito()" class="btn-procesar">
+                        <i class="fa-solid fa-check-double"></i> Procesar Venta
+                    </button>
                 </div>
-
-                <button onclick="confirmarVentaCarrito()" style="width: 100%; padding: 14px; background: #2E7D32; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1.1em; transition: 0.3s; box-shadow: 0 4px 6px rgba(46, 125, 50, 0.3);">
-                    <i class="fa-solid fa-check-double"></i> Procesar Venta
-                </button>
-            </div>
+            </aside>
 
         </div>
     </main>
-
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
         socket.emit('identificar-rol', '<%= role %>');
-        
-        // 1. DIBUJAR LA BAJA DE STOCK EN TIEMPO REAL
+        function mostrarNotificacion(mensaje, tipo = 'info') {
+            const alertasDiv = document.getElementById('alertas-sistema');
+            if (!alertasDiv) return;
+            const alerta = document.createElement('div');
+            alerta.className = 'alerta-chat';
+            if (tipo === 'exito') {
+                alerta.style.borderLeftColor = '#43A047';
+                alerta.style.color = '#2E7D32';
+                alerta.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${mensaje}</span>`;
+            } else if (tipo === 'error') {
+                alerta.style.borderLeftColor = '#EF5350'; 
+                alerta.style.color = '#C62828';
+                alerta.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>${mensaje}</span>`;
+            } else {
+                alerta.innerHTML = `<i class="fa-solid fa-bell"></i> <span>${mensaje}</span>`;
+            }
+
+            alertasDiv.appendChild(alerta);
+            setTimeout(() => { alerta.remove(); }, 4000);
+        }
         socket.on('sincronizar-stock', (data) => {
             const celdaStock = document.getElementById('stock-' + data.idProducto);
             const botonVender = document.getElementById('btn-' + data.idProducto);
@@ -110,33 +127,19 @@
                 botonVender.innerHTML = '<i class="fa-solid fa-ban"></i> Agotado';
             }
         });
-
-        // 2. LÓGICA TIPO "CHAT": Dibuja la alerta roja en la pantalla de la caja
-        const alertasDiv = document.getElementById('alertas-sistema');
         socket.on('alerta-stock', (data) => {
-            if (alertasDiv) {
-                const alerta = document.createElement('div');
-                alerta.style.cssText = 'background: #FFEBEE; color: #C62828; border: 1px solid #EF5350; padding: 12px 20px; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-size: 0.95rem; font-family: sans-serif; display: flex; align-items: center; gap: 10px; font-weight: bold;';
-                alerta.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>Notificación del Sistema: ${data.mensaje}</span>`;
-                
-                alertasDiv.appendChild(alerta);
-                
-                // Desaparece como un pop-up de chat después de 5 segundos
-                setTimeout(() => { alerta.remove(); }, 5000);
-            }
+            mostrarNotificacion(`Aviso de Stock: ${data.mensaje}`, 'error');
         });
-
-        // (El socket de 'catalogo-actualizado' fue eliminado intencionalmente para evitar la recarga)
-
+        socket.on('catalogo-actualizado', () => {
+            window.location.reload();
+        });
         let carrito = [];
-
         function agregarAlCarrito(id, nombre, precio, stockActual) {
-            if (stockActual <= 0) return alert('Este producto está agotado');
-            
+            if (stockActual <= 0) return mostrarNotificacion('Este producto está agotado', 'error');
             const productoEnCarrito = carrito.find(p => p.id === id);
             if (productoEnCarrito) {
                 if (productoEnCarrito.cantidad >= stockActual) {
-                    return alert('Límite de stock alcanzado para este producto.');
+                    return mostrarNotificacion('Límite de stock alcanzado.', 'error');
                 }
                 productoEnCarrito.cantidad++;
             } else {
@@ -154,26 +157,25 @@
             const lista = document.getElementById('lista-carrito');
             const totalSpan = document.getElementById('total-carrito');
             lista.innerHTML = '';
-            
+
             if (carrito.length === 0) {
-                lista.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 0.9em; margin-top: 40px;">El carrito está vacío</p>';
+                lista.innerHTML = '<p class="carrito-vacio">El carrito está vacío</p>';
                 totalSpan.innerText = '0.00';
                 return;
             }
-
             let total = 0;
             carrito.forEach(p => {
                 total += (p.precio * p.cantidad);
                 lista.innerHTML += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 8px;">
-                        <div>
-                            <strong style="font-size: 0.9em; color: #334155;">${p.nombre}</strong><br>
-                            <span style="font-size: 0.85em; color: #64748b;">Cant: ${p.cantidad} x S/ ${p.precio.toFixed(2)}</span>
+                    <div class="item-carrito">
+                        <div class="item-info">
+                            <strong class="item-nombre">${p.nombre}</strong>
+                            <span class="item-detalle">Cant: ${p.cantidad} x S/ ${p.precio.toFixed(2)}</span>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <strong style="color: #1565C0;">S/ ${(p.precio * p.cantidad).toFixed(2)}</strong>
-                            <button onclick="quitarDelCarrito('${p.id}')" style="background: #EF5350; color: white; border: none; border-radius: 4px; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                                <i class="fa-solid fa-xmark"></i>
+                        <div class="item-acciones">
+                            <strong class="item-subtotal">S/ ${(p.precio * p.cantidad).toFixed(2)}</strong>
+                            <button onclick="quitarDelCarrito('${p.id}')" class="btn-quitar" title="Quitar">
+                                <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>
                     </div>
@@ -181,17 +183,11 @@
             });
             totalSpan.innerText = total.toFixed(2);
         }
-
         async function confirmarVentaCarrito() {
-            if (carrito.length === 0) return alert('Debes agregar al menos un medicamento al carrito.');
-            
+            if (carrito.length === 0) return mostrarNotificacion('Agrega medicamentos al carrito.', 'error');
             const nombre = document.getElementById('cliente-nombre').value.trim();
             const dni = document.getElementById('cliente-dni').value.trim();
-            
-            if (!nombre || !dni) {
-                return alert('Por favor, ingresa el nombre y DNI del paciente.');
-            }
-
+            if (!nombre || !dni) return mostrarNotificacion('Ingresa los datos del paciente.', 'error');
             try {
                 const respuesta = await fetch('/vender-carrito', {
                     method: 'POST',
@@ -203,20 +199,19 @@
                         totalVenta: parseFloat(document.getElementById('total-carrito').innerText)
                     })
                 });
-
                 const data = await respuesta.json();
                 if (data.success) {
-                    // ---> LÓGICA TIPO CHAT: Vaciamos el carrito SIN recargar la página <---
                     carrito = [];
                     actualizarVistaCarrito();
                     document.getElementById('cliente-nombre').value = '';
                     document.getElementById('cliente-dni').value = '';
+                    mostrarNotificacion('¡Venta registrada con éxito!', 'exito');
                 } else {
-                    alert('Error al registrar la venta: ' + data.mensaje);
+                    mostrarNotificacion('Error: ' + data.mensaje, 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error al conectar con el servidor.');
+                mostrarNotificacion('Error al conectar con el servidor.', 'error');
             }
         }
     </script>

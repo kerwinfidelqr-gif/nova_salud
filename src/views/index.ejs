@@ -15,17 +15,18 @@
                 <p class="subtitle">Gestión y control de inventario de medicamentos</p>
             </div>
             <div class="botones-top">
-                <% if (role==='admin' ) { %>
-                    <a href="/users" class="btn-reporte" style="background: #FFA726; margin-right: 10px;">Gestionar Usuarios</a>
-                    <a href="/ventas" class="btn-reporte">Ver Historial</a>
+                <% if (role === 'admin') { %>
+                    <a href="/users" class="btn-reporte btn-usuarios"><i class="fa-solid fa-users-gear"></i> Gestionar Usuarios</a>
+                    <a href="/ventas" class="btn-reporte"><i class="fa-solid fa-file-invoice-dollar"></i> Ver Historial</a>
                 <% } %>
-                        <a href="/logout" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Cerrar
-                            Sesión</a>
+                <a href="/logout" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
             </div>
         </div>
+        
         <div id="alertas-sistema"></div>
         <hr class="divider">
-        <% if (role==='admin' ) { %>
+        
+        <% if (role === 'admin') { %>
             <div class="form-container">
                 <h3>Registrar Nuevo Medicamento</h3>
                 <form action="/productos" method="POST" class="form-registro">
@@ -33,72 +34,72 @@
                     <input type="number" name="precio" placeholder="Precio" step="0.10" required>
                     <input type="number" name="stock" placeholder="Stock Actual" required>
                     <input type="number" name="minimoStock" placeholder="Stock Mínimo" required>
-                    <button type="submit" class="btn-guardar">Guardar</button>
+                    <button type="submit" class="btn-guardar"><i class="fa-solid fa-plus"></i> Guardar</button>
                 </form>
             </div>
-            <% } %>
-                <div class="table-header-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="margin-bottom: 0;">Inventario Actual</h3>
-                    <input type="text" id="buscador-medicamentos" placeholder="Buscar medicamento..." 
-                        style="width: 300px; height: 38px; padding: 0 15px; border: 1px solid rgba(100, 181, 246, 0.4); border-radius: 10px; font-size: 0.9rem; outline: none; background-color: rgba(255, 255, 255, 0.95);">
-                </div>
-                <div class="table-wrapper">
-                    <% if (productos && productos.length> 0) { %>
-                        <div class="scroll-area">
-                            <table width="100%">
-                                <thead>
-                                    <tr>
-                                        <th>Medicamento</th>
-                                        <th>Precio</th>
-                                        <th>Stock Actual</th>
-                                        <th>Stock Mínimo</th>
-                                        <th style="text-align: center;">Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% for(let i=0; i < productos.length; i++) { %>
-                                        <tr>
-                                            <td class="med-name">
-                                                <%= productos[i].nombre %>
-                                            </td>
-                                            <td>S/ <%= productos[i].precio %>
-                                            </td>
-                                            <td id="stock-<%= productos[i]._id %>">
-                                                <span
-                                                    class="<%= productos[i].stock <= productos[i].minimoStock ? 'alerta-stock-texto' : 'stock-normal' %>">
-                                                    <%= productos[i].stock %>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <%= productos[i].minimoStock %>
-                                            </td>
-                                            <td class="acciones-td">
-                                                <a href="/editar/<%= productos[i]._id %>" class="btn-editar">Editar</a>
-                                                <form action="/eliminar/<%= productos[i]._id %>" method="POST"
-                                                    class="form-eliminar"
-                                                    onsubmit="return confirm('¿Eliminar <%= productos[i].nombre %>?');">
-                                                    <button type="submit" class="btn-eliminar">Eliminar</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        <% } %>
-                                </tbody>
-                            </table>
-                        </div>
-                        <% } else { %>
-                            <div class="empty-state">
-                                <i class="fa-solid fa-box-open"></i>
-                                <p>No hay medicamentos registrados en el inventario actual.</p>
-                            </div>
+        <% } %>
+        
+        <div class="table-header-flex">
+            <h3>Inventario Actual</h3>
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="buscador-medicamentos" class="search-input" placeholder="Buscar medicamento...">
+            </div>
+        </div>
+        
+        <div class="table-wrapper">
+            <% if (productos && productos.length > 0) { %>
+                <div class="scroll-area">
+                    <table width="100%">
+                        <thead>
+                            <tr>
+                                <th>Medicamento</th>
+                                <th>Precio</th>
+                                <th>Stock Actual</th>
+                                <th>Stock Mínimo</th>
+                                <th class="text-center">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for(let i=0; i < productos.length; i++) { %>
+                                <tr>
+                                    <td class="med-name"><%= productos[i].nombre %></td>
+                                    <td>S/ <%= parseFloat(productos[i].precio).toFixed(2) %></td>
+                                    <td id="stock-<%= productos[i]._id %>">
+                                        <span class="<%= productos[i].stock <= productos[i].minimoStock ? 'alerta-stock-texto' : 'stock-normal' %>">
+                                            <%= productos[i].stock %>
+                                        </span>
+                                    </td>
+                                    <td><%= productos[i].minimoStock %></td>
+                                    <td class="acciones-td text-center">
+                                        <a href="/editar/<%= productos[i]._id %>" class="btn-editar" title="Editar">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </a>
+                                        <form action="/eliminar/<%= productos[i]._id %>" method="POST" class="form-eliminar" onsubmit="return confirm('¿Eliminar <%= productos[i].nombre %>?');">
+                                            <button type="submit" class="btn-eliminar" title="Eliminar">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
                             <% } %>
+                        </tbody>
+                    </table>
                 </div>
+            <% } else { %>
+                <div class="empty-state">
+                    <i class="fa-solid fa-box-open"></i>
+                    <p>No hay medicamentos registrados en el inventario actual.</p>
+                </div>
+            <% } %>
+        </div>
     </main>
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
         socket.emit('identificar-rol', '<%= role %>');
         const alertasDiv = document.getElementById('alertas-sistema');
-
         socket.on('alerta-stock', (data) => {
             const alerta = document.createElement('div');
             alerta.className = 'alerta-caja';
@@ -113,27 +114,13 @@
                 if (span) span.innerText = data.nuevoStock;
             }
         });
-
-        // Agrega esto justo debajo de tus otros socket.on(...)
-        socket.on('catalogo-actualizado', () => {
-            // Cuando el servidor grite que el catálogo cambió, recargamos la página suavemente
-            window.location.reload();
-        });
-
-        // ---> NUEVO: Lógica del Buscador en Vivo <---
         const buscador = document.getElementById('buscador-medicamentos');
-        
         if (buscador) {
             buscador.addEventListener('input', function() {
                 const textoBusqueda = this.value.toLowerCase();
-                // Seleccionamos todas las filas del cuerpo de la tabla
                 const filas = document.querySelectorAll('tbody tr');
-
                 filas.forEach(fila => {
-                    // Buscamos el texto dentro de la celda que tiene la clase 'med-name'
                     const nombreMedicamento = fila.querySelector('.med-name').innerText.toLowerCase();
-                    
-                    // Si el nombre incluye lo que escribimos, la mostramos, sino la ocultamos
                     if (nombreMedicamento.includes(textoBusqueda)) {
                         fila.style.display = '';
                     } else {
